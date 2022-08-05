@@ -1,8 +1,12 @@
-from NLGSentenceGenerator import NLGSentenceGenerator
+from pathlib import Path
+from SwigCaptions import SWiGCaptions
 
 
 if __name__ == '__main__':
+    root = Path("SWiG")
 
-    generator = NLGSentenceGenerator()
-    generated = generator.generate("chase", "mary", object="dog", place="forest")
-    print(generated)
+    validation_file = root / "SWiG_jsons" / "dev.json"
+
+    capgen = SWiGCaptions()
+    captions = capgen.read_and_generate_batch(validation_file, 1)
+    print(captions)
