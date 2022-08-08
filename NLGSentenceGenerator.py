@@ -10,6 +10,10 @@ class SentenceObject:
         self.object = object
         self.place = place
 
+        if subject == None:
+            print(verb, subject, object, place)
+            raise ValueError("Subject can not be empty")
+
     def ToString(self):
         key = self.verb + "_" + self.subject
         if self.object != None:
