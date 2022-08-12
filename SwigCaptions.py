@@ -149,10 +149,20 @@ class SWiGCaptions:
                 compitem = self.get_role_values_with_empty_check(role_values, "place")
                 compliments.append(compitem)
 
+            # remove duplicates of compliments
+            # by placing the last item like place in the end
+            filtered = []
+            for c in compliments:
+                if c not in filtered:
+                    filtered.append(c)
+                else:
+                    filtered.remove(c)
+                    filtered.append(c)
+
             if subj == None or verb == None:
                 return None
 
-            sent = SentenceObject(verb, subj, object=obj, compliments=compliments)
+            sent = SentenceObject(verb, subj, object=obj, compliments=filtered)
         return sent
 
 

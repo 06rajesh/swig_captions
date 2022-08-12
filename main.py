@@ -64,7 +64,7 @@ def run_generation_on_file(targettype, rootpath="SWiG", exportpath="generated"):
     total_item = 0
     total_skipped = 0
 
-    total_batch = 10 ##capgen.total_batch
+    total_batch = capgen.total_batch
     for i in tqdm(range(1, total_batch + 1)):
         captions, skipped = capgen.read_and_generate_batch(i)
 
