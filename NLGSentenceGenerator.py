@@ -4,22 +4,22 @@ from nltk.corpus import brown
 from typing import List
 
 class SentenceObject:
-    def __init__(self, verb, subject, object, place):
+    def __init__(self, verb, subject, object=None, compliments:List[str]=None):
         self.verb = verb
         self.subject = subject
         self.object = object
-        self.place = place
+        self.compliments = compliments
 
         if subject == None:
-            print(verb, subject, object, place)
+            print(verb, subject, object, compliments)
             raise ValueError("Subject can not be empty")
 
     def ToString(self):
         key = self.verb + "_" + self.subject
         if self.object != None:
             key += "_" + self.object
-        if self.place != None:
-            key += "_" + self.place
+        if self.compliments != None and len(self.compliments) > 0:
+            key += "_" + "_".join(self.compliments)
 
         return key
 
@@ -171,7 +171,9 @@ class NLGSentenceGenerator:
         for s in sentences:
             determiners.add(s.subject)
             determiners.add(s.object)
-            compliments.add(s.place)
+            if s.compliments != None and len(s.compliments) > 0:
+                for comp in s.compliments:
+                    compliments.add(comp)
 
         sub_prepos = self.get_determiner_multi(determiners)
         sub_complements = self.get_multi_trigram_preposition(compliments)
@@ -194,11 +196,12 @@ class NLGSentenceGenerator:
                 else:
                     p.setObject(s.object)
 
-            if s.place != None:
-                if self.decorate_compliments and s.place in sub_complements:
-                    p.setComplement(sub_complements[s.place] + " " + s.place)
-                else:
-                    p.setComplement(s.place)
+            if s.compliments != None and len(s.compliments) > 0:
+                for comp in s.compliments:
+                    if self.decorate_compliments and comp in sub_complements:
+                        p.setComplement(sub_complements[comp] + " " + comp)
+                    else:
+                        p.setComplement(comp)
 
             p.setFeature(Feature.TENSE, Tense.PRESENT)
             p.setFeature(Feature.PROGRESSIVE, True)
