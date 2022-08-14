@@ -59,13 +59,13 @@ def run_generation_on_file(targettype, rootpath="SWiG", exportpath="generated"):
     if not os.path.exists(exports):
         os.makedirs(exports)
 
-    capgen = SWiGCaptions(validation_file, batch_size=8)
+    capgen = SWiGCaptions(validation_file, batch_size=20)
 
     total_item = 0
     total_skipped = 0
 
     total_batch = capgen.total_batch
-    for i in tqdm(range(1, total_batch + 1)):
+    for i in tqdm(range(3785, total_batch + 1)):
         captions, skipped = capgen.read_and_generate_batch(i)
 
         total_item += capgen.batch_size
@@ -79,7 +79,7 @@ def run_generation_on_file(targettype, rootpath="SWiG", exportpath="generated"):
 
 if __name__ == '__main__':
     run_generation_on_file(
-        "validation",
+        "train",
         rootpath="SWiG",
         exportpath="generated",
     )

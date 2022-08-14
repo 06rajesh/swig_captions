@@ -1,6 +1,16 @@
 from pathlib import Path
 import json
 import os
+from typing import List
+
+def get_max_len_caption(captions:List[str], fallback=''):
+    if not captions:
+        return fallback
+    max_str = captions[0]
+    for x in captions:
+        if len(x) > len(max_str):
+            max_str = x
+    return max_str
 
 def combine_data(dataset, swigdir="SWiG", generateddir="generated"):
     dataset_to_file = {
@@ -43,13 +53,16 @@ def combine_data(dataset, swigdir="SWiG", generateddir="generated"):
     for key in swig_json.keys():
         temp = swig_json[key]
         try:
-            temp['captions'] = generated_json[key]
-            combined[key] = temp
-            updated += 1
-            total += 1
+            captions = generated_json[key]
         except KeyError:
             total += 1
             continue
+
+        temp['captions'] = captions
+        temp['caption'] = get_max_len_caption(captions)
+        combined[key] = temp
+        updated += 1
+        total += 1
 
     swig_file.close()
     generated_file.close()
@@ -62,4 +75,4 @@ def combine_data(dataset, swigdir="SWiG", generateddir="generated"):
     print(f'Combined dataset saved to file {str(export_target)}')
 
 if __name__ == '__main__':
-    combine_data("validation")
+    combine_data("train")

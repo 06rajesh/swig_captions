@@ -208,6 +208,9 @@ class SWiGCaptions:
         range_start = self.batch_size * (current_batch - 1)
         range_end = range_start + self.batch_size
 
+        if range_end > self.n_items:
+            range_end = self.n_items
+
         for i in range(range_start, range_end):
             key = self._itemkeys[i-1]
             batch_data[key] = self._json[key]
