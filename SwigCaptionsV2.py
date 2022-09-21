@@ -403,9 +403,13 @@ class SwigCaptionGenerator:
         f = self.remove_empty_roles(frame)
         ignored_keys = []
 
+        if len(f.keys()) == 0:
+            return ""
+
         sub_key, sub_val = self.detect_subject_from_frame(f, annot_key)
         if sub_key:
             ignored_keys.append(sub_key)
+
 
         place_key, place_val = self.detect_place_from_frame(f, ignored_keys, annot_key)
         if place_key:
@@ -445,11 +449,15 @@ class SwigCaptionGenerator:
         if self.debug:
             print(frames)
         sentences = []
+        skipped = 0
         for f in frames:
             s = self.process_frames(f, annot_key)
-            sentences.append(s)
+            if s == "" :
+                skipped += 1
+            else:
+                sentences.append(s)
 
-        return sentences
+        return sentences, skipped
 
 class SwigCaptionV2:
     batch_size:int
@@ -486,11 +494,13 @@ class SwigCaptionV2:
     def process_batch_data(self, batch_data:dict):
         captionGen = SwigCaptionGenerator(batch_data)
         output = {}
+        total_skipped = 0
         for key in batch_data:
-            sentences = captionGen.generate_sentences(key)
+            sentences, skipped = captionGen.generate_sentences(key)
             output[key] = sentences
+            total_skipped += skipped
 
-        return output
+        return output, total_skipped
 
 
     def read_and_generate_batch(self, batch_number):

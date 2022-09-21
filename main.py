@@ -114,30 +114,30 @@ def run_generation_on_file(targettype, rootpath="SWiG", exportpath="generated/v2
     if not os.path.exists(exports):
         os.makedirs(exports)
 
-    capgen = SwigCaptionV2(validation_file, batch_size=4)
+    capgen = SwigCaptionV2(validation_file, batch_size=20)
 
     total_item = 0
     total_skipped = 0
 
     total_batch = capgen.total_batch
-    for i in tqdm(range(0, total_batch + 1)):
+    for i in tqdm(range(407, total_batch + 1)):
     # for i in range(5, 6):
-        captions = capgen.read_and_generate_batch(i)
+        captions, skipped = capgen.read_and_generate_batch(i)
 
         total_item += capgen.batch_size
-        # total_skipped += skipped
+        total_skipped += skipped
 
         # debug_batch_image(captions)
 
         save_captions_to_json(captions, export_file)
         save_log(capgen, i, log_file)
 
-    print(f'Total 0 skipped out of {total_item}')
+    print(f'Total {total_skipped} skipped out of {total_item}')
 
 
 if __name__ == '__main__':
     run_generation_on_file(
-        "validation",
+        "test",
         rootpath="SWiG",
         exportpath="generated/v2",
     )

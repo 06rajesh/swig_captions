@@ -1,6 +1,6 @@
 {
-  "target": "SWiG/SWiG_jsons/dev.json",
+  "target": "SWiG/SWiG_jsons/test.json",
   "n_keys": 25200,
-  "total_batch": 6300,
-  "completed_batch": 2
+  "total_batch": 1260,
+  "completed_batch": 410
 }
