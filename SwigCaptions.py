@@ -30,11 +30,6 @@ class SWiGCaptions:
             "performer", "seller", "sprouter", "individuals",
         ]
 
-        self.object_roles = [
-            "admired", "blocked", "bodypart", "boringthing", "caughtitem", "coagent",
-            "coagentpart", "victim",
-        ]
-
     def load_json(self, targetfile: Path):
         path = Path(targetfile)
 

@@ -74,5 +74,37 @@ def combine_data(dataset, swigdir="SWiG", generateddir="generated"):
 
     print(f'Combined dataset saved to file {str(export_target)}')
 
+def check_max_len(dataset, generateddir="generated"):
+    dataset_to_file = {
+        "validation": "dev.json",
+        "test": "test.json",
+        "train": "train.json"
+    }
+
+    target = dataset_to_file[dataset]
+    generated = Path(generateddir)
+
+    generated_target = generated / target
+    if not os.path.exists(generated_target):
+        raise ValueError("Generated target file does not exists")
+
+    generated_file = open(generated_target)
+    generated_json = json.load(generated_file)
+
+    max_len = 0
+    for key in generated_json.keys():
+        captions = generated_json[key]
+        max_len_caption = get_max_len_caption(captions)
+        caption_len = len(max_len_caption.split())
+        if caption_len > max_len:
+            max_len = caption_len
+    generated_file.close()
+
+    print("=============================")
+    print(max_len)
+    print("=============================")
+
+
 if __name__ == '__main__':
-    combine_data("train")
+    # combine_data("test")
+    check_max_len("validation")
