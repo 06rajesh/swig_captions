@@ -3,6 +3,8 @@ import json
 import os
 from typing import List
 
+from SwigCaptionsV2 import show_img
+
 def get_max_len_caption(captions:List[str], fallback=''):
     if not captions:
         return fallback
@@ -12,7 +14,7 @@ def get_max_len_caption(captions:List[str], fallback=''):
             max_str = x
     return max_str
 
-def combine_data(dataset, swigdir="SWiG", generateddir="generated"):
+def combine_data(dataset, swigdir="SWiG", generateddir="generated/v2"):
     dataset_to_file = {
         "validation": "dev.json",
         "test": "test.json",
@@ -74,7 +76,7 @@ def combine_data(dataset, swigdir="SWiG", generateddir="generated"):
 
     print(f'Combined dataset saved to file {str(export_target)}')
 
-def check_max_len(dataset, generateddir="generated"):
+def check_max_len(dataset, generateddir="generated/v2"):
     dataset_to_file = {
         "validation": "dev.json",
         "test": "test.json",
@@ -105,6 +107,38 @@ def check_max_len(dataset, generateddir="generated"):
     print("=============================")
 
 
+def debug_dataset(dataset, generateddir="SWiG/combined_jsons", img_dir="SWiG/images_512"):
+    dataset_to_file = {
+        "validation": "dev.json",
+        "test": "test.json",
+        "train": "train.json"
+    }
+
+    target = dataset_to_file[dataset]
+    generated = Path(generateddir)
+    imgpath = Path(img_dir)
+    targetfile = generated / target
+
+    generated_file = open(targetfile)
+    alljson = json.load(generated_file)
+
+    count = 0
+    for key in alljson.keys():
+        annotation = alljson[key]
+        targetimg = imgpath / key
+
+        bboxes = annotation['bb']
+
+        if len(bboxes.keys()) == 3:
+            print(annotation)
+            show_img(targetimg, annotation)
+
+            count += 1
+            if count >= 5:
+                break
+
+
 if __name__ == '__main__':
-    # combine_data("test")
-    check_max_len("validation")
+    # combine_data("validation")
+    # check_max_len("train")
+    debug_dataset('validation')
